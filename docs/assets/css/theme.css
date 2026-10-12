@@ -115,8 +115,7 @@ html[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
 .post-meta time { font-variant-numeric: tabular-nums; }
 
 /* ---------- 正文排版 ---------- */
-.post { max-width: 760px; }
-.card-page { width: var(--content-w, 780px); max-width: calc(100% - 24px); position: relative; }
+.post, .card-page { width: var(--content-w, 780px); max-width: calc(100% - 24px); position: relative; }
 .content-resizer {
   position: absolute; top: 0; right: -7px;
   width: 14px; height: 100%;

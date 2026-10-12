@@ -77,11 +77,11 @@
     });
   }
 
-  // 卡片内容宽度拖拽（卡片详情页）
+  // 内容宽度拖拽（卡片详情页 + 博客文章页）
   var cResizer = document.getElementById('content-resizer');
-  var cardPage = document.querySelector('.card-page');
-  if (cResizer && cardPage) {
-    var CW_KEY = 'card-content-width';
+  var cTarget = document.querySelector('.card-page') || document.querySelector('.post');
+  if (cResizer && cTarget) {
+    var CW_KEY = 'content-width';
     var savedCW = parseInt(localStorage.getItem(CW_KEY), 10);
     if (savedCW >= 400 && savedCW <= 1600) {
       document.documentElement.style.setProperty('--content-w', savedCW + 'px');
@@ -91,7 +91,7 @@
       cDrag = true;
       cResizer.classList.add('dragging');
       cStartX = e.clientX;
-      cStartW = cardPage.getBoundingClientRect().width;
+      cStartW = cTarget.getBoundingClientRect().width;
       document.body.style.userSelect = 'none';
       document.body.style.cursor = 'col-resize';
       e.preventDefault();

@@ -28,9 +28,10 @@
 
 {# 领域切换器：按领域列出根树。 #}
 {% macro sidebar(roots_by_domain, current_relpath, current_domain, ancestor_relpaths) %}
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
   <div class="sidebar-head">
     <a href="/cards/" class="sidebar-title">知识卡片</a>
+    <button class="pin-toggle" id="pin-toggle" type="button" title="固定/自动隐藏目录" aria-label="固定/自动隐藏目录">📌</button>
   </div>
   <div class="sidebar-domains">
     {% for domain in roots_by_domain|sort %}

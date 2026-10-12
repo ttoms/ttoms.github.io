@@ -6,7 +6,8 @@
   {{ m.sidebar(roots_by_domain, card.relpath, card.domain, card.ancestor_relpaths) }}
   <div class="sidebar-resizer" id="sidebar-resizer" title="拖拽调整目录宽度"></div>
 
-  <article class="cards-main card-page">
+  <div class="cards-main">
+  <article class="card-page">
     <div class="content-resizer" id="content-resizer" title="拖拽调整内容宽度"></div>
     <nav class="breadcrumb">
       <a href="/cards/">知识卡片</a>
@@ -48,5 +49,6 @@
     </footer>
     {% endif %}
   </article>
+  </div>
 </div>
 {% endblock %}

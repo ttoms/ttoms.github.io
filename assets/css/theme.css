@@ -174,16 +174,29 @@ html[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
   padding: 16px 10px 24px 18px;
   border-right: 1px solid var(--border);
   background: var(--bg-soft);
+  transition: width .2s ease;
 }
+.sidebar.auto-hide:not(:hover) { width: 46px; padding-left: 8px; padding-right: 8px; }
+.sidebar.auto-hide:not(:hover) .sidebar-title { display: none; }
+.sidebar.auto-hide:not(:hover) .sidebar-domains { opacity: 0; pointer-events: none; }
+.sidebar.auto-hide:not(:hover) .sidebar-head { justify-content: center; padding: 0; }
 .sidebar-resizer {
   flex: 0 0 5px; cursor: col-resize;
   background: transparent; transition: background .15s;
 }
 .sidebar-resizer:hover, .sidebar-resizer.dragging { background: var(--accent); }
 
-.sidebar-head { margin-bottom: 10px; padding: 0 6px; }
+.sidebar-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; padding: 0 6px; }
 .sidebar-title { font-weight: 700; color: var(--text); font-size: 15px; }
 .sidebar-title:hover { text-decoration: none; }
+.sidebar-domains { transition: opacity .15s; }
+.pin-toggle {
+  flex: 0 0 auto;
+  background: none; border: none; cursor: pointer;
+  font-size: 14px; line-height: 1;
+  color: var(--muted); padding: 4px; border-radius: 5px;
+}
+.pin-toggle:hover { background: var(--bg); color: var(--text); }
 
 /* 树节点 */
 .tree, .tree ul { list-style: none; margin: 0; padding: 0; }
@@ -285,6 +298,11 @@ html[data-theme="dark"] {
   .cards-main { height: auto; overflow: visible; }
   .mindmap-wrap { height: 60vh; }
   .hero-title { font-size: 32px; }
+  /* 移动端禁用自动隐藏与钉按钮（无 hover） */
+  .pin-toggle { display: none; }
+  .sidebar.auto-hide:not(:hover) { width: 100%; padding: 16px 10px 24px 18px; }
+  .sidebar.auto-hide:not(:hover) .sidebar-title { display: block; }
+  .sidebar.auto-hide:not(:hover) .sidebar-domains { opacity: 1; pointer-events: auto; }
 }
 
 /* ---------- 滚动条美化（极简细条） ---------- */

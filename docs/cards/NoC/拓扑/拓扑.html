@@ -41,9 +41,10 @@
 <div class="cards-layout">
   
   
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
   <div class="sidebar-head">
     <a href="/cards/" class="sidebar-title">知识卡片</a>
+    <button class="pin-toggle" id="pin-toggle" type="button" title="固定/自动隐藏目录" aria-label="固定/自动隐藏目录">📌</button>
   </div>
   <div class="sidebar-domains">
     
@@ -1791,7 +1792,8 @@
 
   <div class="sidebar-resizer" id="sidebar-resizer" title="拖拽调整目录宽度"></div>
 
-  <article class="cards-main card-page">
+  <div class="cards-main">
+  <article class="card-page">
     <div class="content-resizer" id="content-resizer" title="拖拽调整内容宽度"></div>
     <nav class="breadcrumb">
       <a href="/cards/">知识卡片</a>
@@ -1856,6 +1858,7 @@
     </footer>
     
   </article>
+  </div>
 </div>
 
 </main>

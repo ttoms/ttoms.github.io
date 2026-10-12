@@ -77,6 +77,24 @@
     });
   }
 
+  // 目录固定 / 自动隐藏
+  var pinBtn = document.getElementById('pin-toggle');
+  var sidebarBox = document.getElementById('sidebar');
+  if (pinBtn && sidebarBox) {
+    var PIN_KEY = 'cards-sidebar-pinned';
+    function applyPin(pinned) {
+      sidebarBox.classList.toggle('auto-hide', !pinned);
+      pinBtn.textContent = pinned ? '📌' : '📍';
+      pinBtn.title = pinned ? '固定目录（点击切换自动隐藏）' : '自动隐藏目录（点击固定）';
+    }
+    var pinned = localStorage.getItem(PIN_KEY) !== '0';  // 默认固定
+    applyPin(pinned);
+    pinBtn.addEventListener('click', function () {
+      applyPin(sidebarBox.classList.contains('auto-hide'));
+      localStorage.setItem(PIN_KEY, sidebarBox.classList.contains('auto-hide') ? '0' : '1');
+    });
+  }
+
   // 内容宽度拖拽（卡片详情页 + 博客文章页）
   var cResizer = document.getElementById('content-resizer');
   var cTarget = document.querySelector('.card-page') || document.querySelector('.post');

@@ -558,6 +558,20 @@ def build_index_json(cards, posts, domains):
     }
 
 
+def compute_asset_hashes():
+    """计算静态资源内容哈希，用于 ?v= 缓存失效。"""
+    hashes = {}
+    assets_src = os.path.join(ROOT, "assets")
+    if os.path.isdir(assets_src):
+        for dirpath, dirnames, filenames in os.walk(assets_src):
+            for fn in filenames:
+                src = os.path.join(dirpath, fn)
+                rel = os.path.relpath(src, ROOT).replace(os.sep, "/")
+                with open(src, "rb") as f:
+                    hashes[rel] = hashlib.sha256(f.read()).hexdigest()[:8]
+    return hashes
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--clean", action="store_true", help="清空 docs/ 后全量重建")
@@ -624,6 +638,17 @@ def main():
         return json.dumps(v, ensure_ascii=False).replace("</", "<\\/")
 
     env.filters["tojson"] = _tojson
+
+    # 静态资源加内容哈希版本号，改动后自动缓存失效
+    asset_hash = compute_asset_hashes()
+
+    def asset_url(path):
+        rel = path.lstrip("/")
+        h = asset_hash.get(rel)
+        return path + ("?v=" + h if h else "")
+
+    env.globals["asset_url"] = asset_url
+
     site = cfg["site"]
     nav = cfg.get("nav") or []
     social = cfg.get("social") or []

@@ -17,7 +17,7 @@
 </article>
 {% endblock %}
 {% block scripts %}
-<script src="/assets/vendor/highlight/highlight.min.js"></script>
+<script src="{{ asset_url('/assets/vendor/highlight/highlight.min.js') }}"></script>
 <script>if(window.hljs){hljs.highlightAll();}</script>
 <script>
 // 正文含公式才懒加载 KaTeX
@@ -25,13 +25,13 @@
   var body = document.querySelector('.post-body');
   if (body && /\$\$|\$[^$\n]+\$/.test(body.innerHTML)) {
     var css = document.createElement('link');
-    css.rel = 'stylesheet'; css.href = '/assets/vendor/katex/katex.min.css';
+    css.rel = 'stylesheet'; css.href = '{{ asset_url('/assets/vendor/katex/katex.min.css') }}';
     document.head.appendChild(css);
     var s = document.createElement('script');
-    s.src = '/assets/vendor/katex/katex.min.js';
+    s.src = '{{ asset_url('/assets/vendor/katex/katex.min.js') }}';
     s.onload = function(){
       var auto = document.createElement('script');
-      auto.src = '/assets/vendor/katex/contrib/auto-render.min.js';
+      auto.src = '{{ asset_url('/assets/vendor/katex/contrib/auto-render.min.js') }}';
       auto.onload = function(){ renderMathInElement(body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]}); };
       document.head.appendChild(auto);
     };

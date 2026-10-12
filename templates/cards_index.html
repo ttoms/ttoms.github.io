@@ -26,9 +26,9 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/assets/vendor/markmap/d3.min.js"></script>
-<script src="/assets/vendor/markmap/markmap-lib.js"></script>
-<script src="/assets/vendor/markmap/markmap-view.js"></script>
+<script src="{{ asset_url('/assets/vendor/markmap/d3.min.js') }}"></script>
+<script src="{{ asset_url('/assets/vendor/markmap/markmap-lib.js') }}"></script>
+<script src="{{ asset_url('/assets/vendor/markmap/markmap-view.js') }}"></script>
 <script>
 (function () {
   var OUTLINES = JSON.parse(document.getElementById('outlines-data').textContent);

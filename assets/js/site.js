@@ -76,4 +76,40 @@
       if (w) localStorage.setItem(WIDTH_KEY, w);
     });
   }
+
+  // 卡片内容宽度拖拽（卡片详情页）
+  var cResizer = document.getElementById('content-resizer');
+  var cardPage = document.querySelector('.card-page');
+  if (cResizer && cardPage) {
+    var CW_KEY = 'card-content-width';
+    var savedCW = parseInt(localStorage.getItem(CW_KEY), 10);
+    if (savedCW >= 400 && savedCW <= 1600) {
+      document.documentElement.style.setProperty('--content-w', savedCW + 'px');
+    }
+    var cDrag = false, cStartX = 0, cStartW = 0;
+    cResizer.addEventListener('mousedown', function (e) {
+      cDrag = true;
+      cResizer.classList.add('dragging');
+      cStartX = e.clientX;
+      cStartW = cardPage.getBoundingClientRect().width;
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = 'col-resize';
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function (e) {
+      if (!cDrag) return;
+      var w = cStartW + (e.clientX - cStartX);
+      w = Math.max(400, Math.min(1600, w));
+      document.documentElement.style.setProperty('--content-w', w + 'px');
+    });
+    document.addEventListener('mouseup', function () {
+      if (!cDrag) return;
+      cDrag = false;
+      cResizer.classList.remove('dragging');
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+      var w = parseInt(document.documentElement.style.getPropertyValue('--content-w'), 10);
+      if (w) localStorage.setItem(CW_KEY, w);
+    });
+  }
 })();

@@ -9,6 +9,8 @@
   --code-bg: #f0f1f3;
   --highlight: #fff3bf;
   --card-node-current: #ffd43b;
+  --scrollbar-thumb: #d3d6da;
+  --scrollbar-thumb-hover: #b8bcc2;
 }
 html[data-theme="dark"] {
   --bg: #15171c;
@@ -20,6 +22,8 @@ html[data-theme="dark"] {
   --code-bg: #23272e;
   --highlight: #5a4a00;
   --card-node-current: #b8860b;
+  --scrollbar-thumb: #3a4047;
+  --scrollbar-thumb-hover: #4a515a;
 }
 
 * { box-sizing: border-box; }
@@ -111,7 +115,19 @@ html[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
 .post-meta time { font-variant-numeric: tabular-nums; }
 
 /* ---------- 正文排版 ---------- */
-.post, .card-page { max-width: 760px; }
+.post { max-width: 760px; }
+.card-page { width: var(--content-w, 780px); max-width: calc(100% - 24px); position: relative; }
+.content-resizer {
+  position: absolute; top: 0; right: -7px;
+  width: 14px; height: 100%;
+  cursor: col-resize; z-index: 6;
+}
+.content-resizer::after {
+  content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 3px; height: 48px; border-radius: 2px;
+  background: var(--border); transition: background .2s;
+}
+.content-resizer:hover::after, .content-resizer.dragging::after { background: var(--accent); }
 .post-head, .card-head { margin-bottom: 24px; }
 .post-title, .card-title { font-size: 30px; line-height: 1.3; margin: 0 0 8px; letter-spacing: -0.3px; }
 .post-body, .card-body { font-size: 16.5px; }
@@ -271,3 +287,16 @@ html[data-theme="dark"] {
   .mindmap-wrap { height: 60vh; }
   .hero-title { font-size: 32px; }
 }
+
+/* ---------- 滚动条美化（极简细条） ---------- */
+* { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); background-clip: padding-box; }
+::-webkit-scrollbar-corner { background: transparent; }

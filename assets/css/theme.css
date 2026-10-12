@@ -177,25 +177,14 @@ html[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
   transition: width .22s ease, box-shadow .22s ease;
 }
 
-/* 自动隐藏：侧栏浮在内容之上（overlay） */
-.cards-layout.auto-hide .sidebar {
-  position: absolute; left: 0; top: 0; bottom: 0;
-  width: 46px;
-  overflow: hidden;
-  z-index: 50;
-  box-shadow: none;
-}
-.cards-layout.auto-hide .sidebar:hover {
-  width: var(--sidebar-w, 300px);
-  overflow-y: auto; overflow-x: hidden;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, .18);
-}
+/* 自动隐藏：收起成窄条，悬停滑出（push，不遮挡内容） */
+.cards-layout.auto-hide .sidebar { width: 46px; }
+.cards-layout.auto-hide .sidebar:hover { width: var(--sidebar-w, 300px); }
 .cards-layout.auto-hide .sidebar:not(:hover) { padding: 12px 8px; }
 .cards-layout.auto-hide .sidebar:not(:hover) .sidebar-head { justify-content: flex-end; }
 .cards-layout.auto-hide .sidebar:not(:hover) .sidebar-title { display: none; }
 .cards-layout.auto-hide .sidebar:not(:hover) .sidebar-domains { opacity: 0; pointer-events: none; }
 .cards-layout.auto-hide .sidebar-resizer { display: none; }
-.cards-layout.auto-hide .cards-main { margin-left: 46px; }
 .sidebar-resizer {
   flex: 0 0 5px; cursor: col-resize;
   background: transparent; transition: background .15s;
@@ -320,8 +309,7 @@ html[data-theme="dark"] {
   .hero-title { font-size: 32px; }
   /* 移动端禁用自动隐藏与钉按钮（无 hover） */
   .pin-toggle { display: none; }
-  .cards-layout.auto-hide .sidebar { position: static; width: 100%; height: auto; box-shadow: none; overflow-y: auto; }
-  .cards-layout.auto-hide .cards-main { margin-left: 0; }
+  .cards-layout.auto-hide .sidebar { width: 100%; padding: 16px 10px 24px 18px; }
   .cards-layout.auto-hide .sidebar:not(:hover) .sidebar-title { display: block; }
   .cards-layout.auto-hide .sidebar:not(:hover) .sidebar-domains { opacity: 1; pointer-events: auto; }
 }

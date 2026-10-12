@@ -33,7 +33,9 @@
       {% if card.parent %}
       <div class="rel-block">
         <h3>父卡片</h3>
-        <a class="rel-link" href="{{ card.parent.url }}">{{ card.parent.name }}</a>
+        <div class="rel-links">
+          <a class="rel-link" href="{{ card.parent.url }}">{{ card.parent.name }}</a>
+        </div>
       </div>
       {% endif %}
       {% if card.children %}

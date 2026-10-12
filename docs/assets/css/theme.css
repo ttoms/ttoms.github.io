@@ -163,7 +163,7 @@ html[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
 
 /* ---------- 卡片浏览器布局（全宽全高 + 可拖拽目录） ---------- */
 .site-main-cards { max-width: none; padding: 0; min-height: 0; }
-.cards-layout { display: flex; align-items: stretch; height: calc(100vh - 56px); }
+.cards-layout { display: flex; align-items: stretch; height: calc(100vh - 56px); position: relative; }
 .cards-main { flex: 1 1 auto; min-width: 0; overflow-y: auto; padding: 20px 28px 32px; }
 .cards-main-fill { display: flex; flex-direction: column; }
 
@@ -174,12 +174,28 @@ html[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
   padding: 16px 10px 24px 18px;
   border-right: 1px solid var(--border);
   background: var(--bg-soft);
-  transition: width .2s ease;
+  transition: width .22s ease, box-shadow .22s ease;
 }
-.sidebar.auto-hide:not(:hover) { width: 46px; padding-left: 8px; padding-right: 8px; }
-.sidebar.auto-hide:not(:hover) .sidebar-title { display: none; }
-.sidebar.auto-hide:not(:hover) .sidebar-domains { opacity: 0; pointer-events: none; }
-.sidebar.auto-hide:not(:hover) .sidebar-head { justify-content: center; padding: 0; }
+
+/* 自动隐藏：侧栏浮在内容之上（overlay） */
+.cards-layout.auto-hide .sidebar {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 46px;
+  overflow: hidden;
+  z-index: 50;
+  box-shadow: none;
+}
+.cards-layout.auto-hide .sidebar:hover {
+  width: var(--sidebar-w, 300px);
+  overflow-y: auto; overflow-x: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .18);
+}
+.cards-layout.auto-hide .sidebar:not(:hover) { padding: 12px 8px; }
+.cards-layout.auto-hide .sidebar:not(:hover) .sidebar-head { justify-content: flex-end; }
+.cards-layout.auto-hide .sidebar:not(:hover) .sidebar-title { display: none; }
+.cards-layout.auto-hide .sidebar:not(:hover) .sidebar-domains { opacity: 0; pointer-events: none; }
+.cards-layout.auto-hide .sidebar-resizer { display: none; }
+.cards-layout.auto-hide .cards-main { margin-left: 46px; }
 .sidebar-resizer {
   flex: 0 0 5px; cursor: col-resize;
   background: transparent; transition: background .15s;
@@ -192,11 +208,15 @@ html[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
 .sidebar-domains { transition: opacity .15s; }
 .pin-toggle {
   flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
   background: none; border: none; cursor: pointer;
-  font-size: 14px; line-height: 1;
-  color: var(--muted); padding: 4px; border-radius: 5px;
+  color: var(--muted); padding: 5px; border-radius: 6px;
+  transition: background .15s, color .15s;
 }
 .pin-toggle:hover { background: var(--bg); color: var(--text); }
+.pin-toggle .pin-icon { display: block; transition: transform .2s ease, color .2s ease; }
+.pin-toggle.pinned .pin-icon { transform: rotate(0deg); color: var(--accent); }
+.pin-toggle.unpinned .pin-icon { transform: rotate(90deg); color: var(--muted); }
 
 /* 树节点 */
 .tree, .tree ul { list-style: none; margin: 0; padding: 0; }
@@ -300,9 +320,10 @@ html[data-theme="dark"] {
   .hero-title { font-size: 32px; }
   /* 移动端禁用自动隐藏与钉按钮（无 hover） */
   .pin-toggle { display: none; }
-  .sidebar.auto-hide:not(:hover) { width: 100%; padding: 16px 10px 24px 18px; }
-  .sidebar.auto-hide:not(:hover) .sidebar-title { display: block; }
-  .sidebar.auto-hide:not(:hover) .sidebar-domains { opacity: 1; pointer-events: auto; }
+  .cards-layout.auto-hide .sidebar { position: static; width: 100%; height: auto; box-shadow: none; overflow-y: auto; }
+  .cards-layout.auto-hide .cards-main { margin-left: 0; }
+  .cards-layout.auto-hide .sidebar:not(:hover) .sidebar-title { display: block; }
+  .cards-layout.auto-hide .sidebar:not(:hover) .sidebar-domains { opacity: 1; pointer-events: auto; }
 }
 
 /* ---------- 滚动条美化（极简细条） ---------- */

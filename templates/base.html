@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang|default('zh-CN') }}" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ site.title }}{% endblock %}</title>
+<meta name="description" content="{{ site.description }}">
+<script>
+// 主题初始化（防闪烁）：跟随系统 + localStorage 覆盖
+(function () {
+  var saved = localStorage.getItem('theme');
+  var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var theme = saved || (sysDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="stylesheet" href="/assets/css/theme.css">
+{% block head_extra %}{% endblock %}
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="/index.html">{{ site.title }}</a>
+    <nav class="site-nav">
+      {% for item in nav %}
+      <a href="{{ item.url }}" class="nav-link {% if active == item.key %}active{% endif %}">{{ item.label }}</a>
+      {% endfor %}
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="切换主题" title="切换深浅色">
+      <span class="icon-sun">☀</span><span class="icon-moon">☾</span>
+    </button>
+  </div>
+</header>
+
+<main class="site-main">
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    {% if social %}
+    <div class="social">
+      {% for s in social %}<a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.label }}</a>{% endfor %}
+    </div>
+    {% endif %}
+    <div class="copyright">© {{ site.author }} · 自建静态站</div>
+  </div>
+</footer>
+
+<script src="/assets/js/site.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,44 @@
+{# 共享宏：目录树 + 领域切换器 #}
+
+{# 递归渲染卡片树。current_relpath 用于高亮当前卡并展开祖先。 #}
+{% macro tree(nodes, current_relpath) %}
+<ul class="tree">
+  {% for n in nodes %}
+  <li>
+    {% set has_kids = n.children|length > 0 %}
+    {% set is_current = (current_relpath is not none and n.relpath == current_relpath) %}
+    {% set is_ancestor = (current_relpath is not none and current_relpath.startswith(n.relpath + '/')) %}
+    {% if has_kids %}
+      <details {% if is_current or is_ancestor %}open{% endif %}>
+        <summary>
+          <a href="{{ n.url }}" class="tree-link {% if is_current %}current{% endif %}">{{ n.name }}</a>
+        </summary>
+        {{ tree(n.children, current_relpath) }}
+      </details>
+    {% else %}
+      <div class="tree-leaf">
+        <a href="{{ n.url }}" class="tree-link {% if is_current %}current{% endif %}">{{ n.name }}</a>
+      </div>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endmacro %}
+
+{# 领域切换器：按领域列出根树。 #}
+{% macro sidebar(roots_by_domain, current_relpath, current_domain) %}
+<aside class="sidebar">
+  <div class="sidebar-head">
+    <a href="/cards/" class="sidebar-title">知识卡片</a>
+  </div>
+  <div class="sidebar-domains">
+    {% for domain in roots_by_domain|sort %}
+    {% set roots = roots_by_domain[domain] %}
+    <details class="domain-group" {% if domain == current_domain %}open{% endif %}>
+      <summary class="domain-label">{{ domain }}</summary>
+      {{ tree(roots, current_relpath) }}
+    </details>
+    {% endfor %}
+  </div>
+</aside>
+{% endmacro %}

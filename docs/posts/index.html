@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>博客 · ttoms</title>
+<meta name="description" content="半导体/芯片/SOC/总线">
+<script>
+// 主题初始化（防闪烁）：跟随系统 + localStorage 覆盖
+(function () {
+  var saved = localStorage.getItem('theme');
+  var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var theme = saved || (sysDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="stylesheet" href="/assets/css/theme.css">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="/index.html">ttoms</a>
+    <nav class="site-nav">
+      
+      <a href="/index.html" class="nav-link ">首页</a>
+      
+      <a href="/posts/" class="nav-link active">博客</a>
+      
+      <a href="/cards/" class="nav-link ">知识卡片</a>
+      
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="切换主题" title="切换深浅色">
+      <span class="icon-sun">☀</span><span class="icon-moon">☾</span>
+    </button>
+  </div>
+</header>
+
+<main class="site-main">
+
+<div class="page-head">
+  <h1>博客</h1>
+  
+  
+</div>
+
+
+<p class="empty">还没有文章。在 <code>Private/Posts</code> 下写 Markdown，然后 <code>python build.py</code>。</p>
+
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    
+    <div class="social">
+      <a href="https://github.com/ttoms" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    
+    <div class="copyright">© ttoms · 自建静态站</div>
+  </div>
+</footer>
+
+<script src="/assets/js/site.js"></script>
+
+</body>
+</html>

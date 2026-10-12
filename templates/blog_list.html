@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}博客 · {{ site.title }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>博客</h1>
+  {% set cats = posts|map(attribute='category')|unique|list %}
+  {% if cats|length > 1 %}
+  <div class="category-filter" id="category-filter">
+    <button class="chip active" data-cat="*">全部</button>
+    {% for c in cats %}
+    <button class="chip" data-cat="{{ c }}">{{ c }}</button>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+{% if posts %}
+<ul class="post-list" id="post-list">
+  {% for p in posts %}
+  <li class="post-item" data-category="{{ p.category }}">
+    <a class="post-title" href="{{ p.url }}">{{ p.title }}</a>
+    <div class="post-meta">
+      {% if p.date %}<time>{{ p.date }}</time>{% endif %}
+      <span class="post-cat">{{ p.category }}</span>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="empty">还没有文章。在 <code>{{ "Private/Posts" }}</code> 下写 Markdown，然后 <code>python build.py</code>。</p>
+{% endif %}
+{% endblock %}

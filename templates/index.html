@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ site.title }}{% endblock %}
+{% block content %}
+<section class="hero">
+  {% if site.avatar %}<img class="avatar" src="{{ site.avatar }}" alt="{{ site.author }}">{% endif %}
+  <h1 class="hero-title">{{ site.title }}</h1>
+  <p class="hero-desc">{{ site.description }}</p>
+  {% if social %}
+  <div class="hero-links">
+    {% for s in social %}<a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.label }}</a>{% endfor %}
+  </div>
+  {% endif %}
+</section>
+
+<section class="entries">
+  <a class="entry-card" href="/posts/">
+    <h2>博客</h2>
+    <p>写作 · 笔记 · 思考</p>
+  </a>
+  <a class="entry-card" href="/cards/">
+    <h2>知识卡片</h2>
+    <p>芯片 · NoC · 集群 · 存储 · 工艺</p>
+  </a>
+</section>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ card.name }} · 知识卡片 · {{ site.title }}{% endblock %}
+{% block content %}
+<div class="cards-layout">
+  {% import "_macros.html" as m %}
+  {{ m.sidebar(roots_by_domain, card.relpath, card.domain) }}
+
+  <article class="cards-main card-page">
+    <nav class="breadcrumb">
+      <a href="/cards/">知识卡片</a>
+      {% for a in card.ancestors %}<span class="sep">/</span><a href="{{ a.url }}">{{ a.name }}</a>{% endfor %}
+      <span class="sep">/</span><span class="here">{{ card.name }}</span>
+    </nav>
+
+    <header class="card-head">
+      <h1 class="card-title">{{ card.name }}</h1>
+      <div class="card-meta">
+        <span class="card-domain">{{ card.domain }}</span>
+        {% if card.category %}<span class="card-cat">{{ card.category }}</span>{% endif %}
+        <a class="btn-mindmap" href="/cards/index.html#{{ card.relpath }}">思维导图定位 ↗</a>
+      </div>
+    </header>
+
+    <div class="card-body">
+      {{ card.html|safe }}
+    </div>
+
+    {% if card.parent or card.children %}
+    <footer class="card-rel">
+      {% if card.parent %}
+      <div class="rel-block">
+        <h3>父卡片</h3>
+        <a class="rel-link" href="{{ card.parent.url }}">{{ card.parent.name }}</a>
+      </div>
+      {% endif %}
+      {% if card.children %}
+      <div class="rel-block">
+        <h3>子卡片（{{ card.children|length }}）</h3>
+        <div class="rel-links">
+          {% for c in card.children %}
+          <a class="rel-link" href="{{ c.url }}">{{ c.name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </footer>
+    {% endif %}
+  </article>
+</div>
+{% endblock %}

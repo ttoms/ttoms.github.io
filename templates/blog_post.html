@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} · {{ site.title }}{% endblock %}
+{% block content %}
+<article class="post">
+  <header class="post-head">
+    <h1 class="post-title">{{ post.title }}</h1>
+    <div class="post-meta">
+      {% if post.date %}<time>{{ post.date }}</time>{% endif %}
+      <span class="post-cat">{{ post.category }}</span>
+      {% if post.tags %}<span class="post-tags">{{ post.tags|join(' · ') }}</span>{% endif %}
+    </div>
+  </header>
+  <div class="post-body">
+    {{ post.html|safe }}
+  </div>
+</article>
+{% endblock %}
+{% block scripts %}
+<script src="/assets/vendor/highlight/highlight.min.js"></script>
+<script>if(window.hljs){hljs.highlightAll();}</script>
+<script>
+// 正文含公式才懒加载 KaTeX
+(function(){
+  var body = document.querySelector('.post-body');
+  if (body && /\$\$|\$[^$\n]+\$/.test(body.innerHTML)) {
+    var css = document.createElement('link');
+    css.rel = 'stylesheet'; css.href = '/assets/vendor/katex/katex.min.css';
+    document.head.appendChild(css);
+    var s = document.createElement('script');
+    s.src = '/assets/vendor/katex/katex.min.js';
+    s.onload = function(){
+      var auto = document.createElement('script');
+      auto.src = '/assets/vendor/katex/contrib/auto-render.min.js';
+      auto.onload = function(){ renderMathInElement(body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]}); };
+      document.head.appendChild(auto);
+    };
+    document.head.appendChild(s);
+  }
+})();
+</script>
+{% endblock %}

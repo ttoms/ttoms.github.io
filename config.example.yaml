@@ -1,0 +1,31 @@
+# 复制为 config.yaml 后按需修改（config.yaml 已被 .gitignore 忽略，不会提交）
+# 多机协作：每台机器各维护一份本地 config.yaml
+
+site:
+  title: "My Site"                 # 站点名
+  description: "个人博客与知识卡片"    # 首页一句话简介
+  author: "Your Name"
+  lang: "zh-CN"
+  # avatar: "/assets/avatar.png"    # 可选，放 assets/ 下，不需要就删掉
+
+source:
+  # 两个内容源目录（Markdown），改成你自己的路径
+  blog_dir: "~/notes/posts"
+  cards_dir: "~/notes/cards"
+
+output:
+  dir: "docs"
+
+# 顶部导航（key 用于高亮当前页）
+nav:
+  - {key: "home",  label: "首页", url: "/index.html"}
+  - {key: "blog",  label: "博客", url: "/posts/"}
+  - {key: "cards", label: "知识卡片", url: "/cards/"}
+
+# 首页社交 / 项目链接（可选）
+social: []
+  # - {label: "GitHub", url: "https://github.com/yourname"}
+  # - {label: "Email", url: "mailto:you@example.com"}
+
+# 卡片目录里要跳过的非卡片文件（模板 / 索引等），按文件名列出
+exclude_cards: []

@@ -1,0 +1,10 @@
+# 机器本地配置（各机路径不同）
+config.yaml
+
+# 构建中间产物
+.build-manifest.json
+__pycache__/
+*.pyc
+
+# 系统
+.DS_Store

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ttoms</title>
+<meta name="description" content="半导体/芯片/SOC/总线">
+<script>
+// 主题初始化（防闪烁）：跟随系统 + localStorage 覆盖
+(function () {
+  var saved = localStorage.getItem('theme');
+  var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var theme = saved || (sysDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="stylesheet" href="/assets/css/theme.css">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="/index.html">ttoms</a>
+    <nav class="site-nav">
+      
+      <a href="/index.html" class="nav-link active">首页</a>
+      
+      <a href="/posts/" class="nav-link ">博客</a>
+      
+      <a href="/cards/" class="nav-link ">知识卡片</a>
+      
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="切换主题" title="切换深浅色">
+      <span class="icon-sun">☀</span><span class="icon-moon">☾</span>
+    </button>
+  </div>
+</header>
+
+<main class="site-main">
+
+<section class="hero">
+  
+  <h1 class="hero-title">ttoms</h1>
+  <p class="hero-desc">半导体/芯片/SOC/总线</p>
+  
+  <div class="hero-links">
+    <a href="https://github.com/ttoms" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  
+</section>
+
+<section class="entries">
+  <a class="entry-card" href="/posts/">
+    <h2>博客</h2>
+    <p>写作 · 笔记 · 思考</p>
+  </a>
+  <a class="entry-card" href="/cards/">
+    <h2>知识卡片</h2>
+    <p>芯片 · NoC · 集群 · 存储 · 工艺</p>
+  </a>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    
+    <div class="social">
+      <a href="https://github.com/ttoms" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    
+    <div class="copyright">© ttoms · 自建静态站</div>
+  </div>
+</footer>
+
+<script src="/assets/js/site.js"></script>
+
+</body>
+</html>

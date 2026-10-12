@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>内存墙 · 知识卡片 · ttoms</title>
+<meta name="description" content="半导体/芯片/SOC/总线">
+<script>
+// 主题初始化（防闪烁）：跟随系统 + localStorage 覆盖
+(function () {
+  var saved = localStorage.getItem('theme');
+  var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var theme = saved || (sysDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="stylesheet" href="/assets/css/theme.css">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="/index.html">ttoms</a>
+    <nav class="site-nav">
+      
+      <a href="/index.html" class="nav-link ">首页</a>
+      
+      <a href="/posts/" class="nav-link ">博客</a>
+      
+      <a href="/cards/" class="nav-link active">知识卡片</a>
+      
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="切换主题" title="切换深浅色">
+      <span class="icon-sun">☀</span><span class="icon-moon">☾</span>
+    </button>
+  </div>
+</header>
+
+<main class="site-main">
+
+<div class="cards-layout">
+  
+  
+<aside class="sidebar">
+  <div class="sidebar-head">
+    <a href="/cards/" class="sidebar-title">知识卡片</a>
+  </div>
+  <div class="sidebar-domains">
+    
+    
+    <details class="domain-group" >
+      <summary class="domain-label">AI集群</summary>
+      
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/AI%E9%9B%86%E7%BE%A4/AI%E9%9B%86%E7%BE%A4.html" class="tree-link ">AI集群</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E4%BA%92%E8%81%94/%E4%BA%92%E8%81%94.html" class="tree-link ">互联</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E4%BA%92%E8%81%94/CXL.html" class="tree-link ">CXL</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E4%BA%92%E8%81%94/Scale-Out.html" class="tree-link ">Scale-Out</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E4%BA%92%E8%81%94/Scale-Up.html" class="tree-link ">Scale-Up</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E4%BA%92%E8%81%94/NVLink.html" class="tree-link ">NVLink</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E4%BA%92%E8%81%94/die-to-die.html" class="tree-link ">die-to-die</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E4%BA%92%E8%81%94/HCCS.html" class="tree-link ">HCCS</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E4%BA%92%E8%81%94/UCIe.html" class="tree-link ">UCIe</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E5%B9%B6%E8%A1%8C/%E5%B9%B6%E8%A1%8C%E7%AD%96%E7%95%A5.html" class="tree-link ">并行策略</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E5%B9%B6%E8%A1%8C/%E5%BC%A0%E9%87%8F%E5%B9%B6%E8%A1%8C.html" class="tree-link ">张量并行</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E5%B9%B6%E8%A1%8C/%E6%95%B0%E6%8D%AE%E5%B9%B6%E8%A1%8C.html" class="tree-link ">数据并行</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E5%B9%B6%E8%A1%8C/%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%B9%B6%E8%A1%8C.html" class="tree-link ">流水线并行</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E6%8B%93%E6%89%91/%E6%8B%93%E6%89%91.html" class="tree-link ">拓扑</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E6%8B%93%E6%89%91/Dragonfly.html" class="tree-link ">Dragonfly</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E6%8B%93%E6%89%91/Fat-Tree.html" class="tree-link ">Fat-Tree</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E6%8B%93%E6%89%91/POD.html" class="tree-link ">POD</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E6%8B%93%E6%89%91/%E6%9C%BA%E6%9F%9C%EF%BC%88Rack%EF%BC%89.html" class="tree-link ">机柜（Rack）</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E6%8B%93%E6%89%91/%E8%8A%82%E7%82%B9.html" class="tree-link ">节点</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E6%8B%93%E6%89%91/%E8%B6%85%E8%8A%82%E7%82%B9.html" class="tree-link ">超节点</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E7%BD%91%E7%BB%9C/%E7%BD%91%E7%BB%9C.html" class="tree-link ">网络</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E7%BD%91%E7%BB%9C/DPU.html" class="tree-link ">DPU</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E7%BD%91%E7%BB%9C/NIC.html" class="tree-link ">NIC</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E7%BD%91%E7%BB%9C/RDMA.html" class="tree-link ">RDMA</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E7%BD%91%E7%BB%9C/InfiniBand.html" class="tree-link ">InfiniBand</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E7%BD%91%E7%BB%9C/RoCEv2.html" class="tree-link ">RoCEv2</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E9%80%9A%E4%BF%A1/%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1.html" class="tree-link ">集合通信</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E9%80%9A%E4%BF%A1/AllGather.html" class="tree-link ">AllGather</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E9%80%9A%E4%BF%A1/AllReduce.html" class="tree-link ">AllReduce</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E9%80%9A%E4%BF%A1/Broadcast.html" class="tree-link ">Broadcast</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/AI%E9%9B%86%E7%BE%A4/%E9%80%9A%E4%BF%A1/Reduce-Scatter.html" class="tree-link ">Reduce-Scatter</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+</ul>
+
+    </details>
+    
+    
+    <details class="domain-group" >
+      <summary class="domain-label">NoC</summary>
+      
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/NoC/NoC.html" class="tree-link ">NoC</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%9E%B6%E6%9E%84/bufferless%20NoC.html" class="tree-link ">bufferless NoC</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E4%B8%80%E8%87%B4%E6%80%A7.html" class="tree-link ">一致性</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/NoC/%E4%BF%9D%E5%BA%8F/%E4%BF%9D%E5%BA%8F.html" class="tree-link ">保序</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E4%BF%9D%E5%BA%8F/%E5%90%8CID%E4%BF%9D%E5%BA%8F.html" class="tree-link ">同ID保序</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E4%BF%9D%E5%BA%8F/%E5%90%8C%E5%9C%B0%E5%9D%80%E4%BF%9D%E5%BA%8F.html" class="tree-link ">同地址保序</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%8A%9F%E8%80%97%E7%AE%A1%E7%90%86.html" class="tree-link ">功耗管理</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/NoC/%E5%8D%8F%E8%AE%AE/%E5%8D%8F%E8%AE%AE.html" class="tree-link ">协议</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%8D%8F%E8%AE%AE/ACE.html" class="tree-link ">ACE</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%8D%8F%E8%AE%AE/AHB.html" class="tree-link ">AHB</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%8D%8F%E8%AE%AE/APB.html" class="tree-link ">APB</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%8D%8F%E8%AE%AE/AXI.html" class="tree-link ">AXI</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%8D%8F%E8%AE%AE/Atomic%E4%BC%A0%E8%BE%93.html" class="tree-link ">Atomic传输</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%8D%8F%E8%AE%AE/CHI.html" class="tree-link ">CHI</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%8D%8F%E8%AE%AE/Exclusive%E4%BC%A0%E8%BE%93.html" class="tree-link ">Exclusive传输</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%8D%8F%E8%AE%AE/Outstanding.html" class="tree-link ">Outstanding</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/NoC/%E5%9F%BA%E7%A1%80/%E5%9F%BA%E7%A1%80.html" class="tree-link ">基础</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%9F%BA%E7%A1%80/Latency.html" class="tree-link ">Latency</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%9F%BA%E7%A1%80/QoS.html" class="tree-link ">QoS</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%9F%BA%E7%A1%80/ROB.html" class="tree-link ">ROB</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%9F%BA%E7%A1%80/Throughput.html" class="tree-link ">Throughput</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%9F%BA%E7%A1%80/%E4%BA%A4%E6%8D%A2%E6%96%B9%E5%BC%8F.html" class="tree-link ">交换方式</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%9F%BA%E7%A1%80/%E4%BB%B2%E8%A3%81.html" class="tree-link ">仲裁</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%9F%BA%E7%A1%80/%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3.html" class="tree-link ">网络接口</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%9F%BA%E7%A1%80/%E8%B7%AF%E7%94%B1%E5%99%A8%E6%B5%81%E6%B0%B4%E7%BA%BF.html" class="tree-link ">路由器流水线</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%9F%BA%E7%A1%80/%E9%93%BE%E8%B7%AF%E5%B1%82.html" class="tree-link ">链路层</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E5%A4%9A%E6%92%AD.html" class="tree-link ">多播</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/NoC/%E6%8B%93%E6%89%91/%E6%8B%93%E6%89%91.html" class="tree-link ">拓扑</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%8B%93%E6%89%91/CD-XBar.html" class="tree-link ">CD-XBar</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%8B%93%E6%89%91/Clos.html" class="tree-link ">Clos</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%8B%93%E6%89%91/DragonFly%E6%80%BB%E7%BA%BF.html" class="tree-link ">DragonFly总线</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%8B%93%E6%89%91/Fat-Tree%E6%80%BB%E7%BA%BF.html" class="tree-link ">Fat-Tree总线</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%8B%93%E6%89%91/Hybrid-Tree.html" class="tree-link ">Hybrid-Tree</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%8B%93%E6%89%91/Hypercube.html" class="tree-link ">Hypercube</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%8B%93%E6%89%91/Mesh.html" class="tree-link ">Mesh</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%8B%93%E6%89%91/Ring.html" class="tree-link ">Ring</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%8B%93%E6%89%91/Torus.html" class="tree-link ">Torus</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%8B%93%E6%89%91/%E4%BA%A4%E5%8F%89%E5%BC%80%E5%85%B3.html" class="tree-link ">交叉开关</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/NoC/%E6%AD%BB%E9%94%81/%E6%AD%BB%E9%94%81.html" class="tree-link ">死锁</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%AD%BB%E9%94%81/%E5%8D%8F%E8%AE%AE%E6%AD%BB%E9%94%81.html" class="tree-link ">协议死锁</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%AD%BB%E9%94%81/%E6%B4%BB%E9%94%81.html" class="tree-link ">活锁</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%AD%BB%E9%94%81/%E8%B7%AF%E7%94%B1%E6%AD%BB%E9%94%81.html" class="tree-link ">路由死锁</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%AD%BB%E9%94%81/%E9%A5%A5%E9%A5%BF.html" class="tree-link ">饥饿</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/NoC/%E6%B5%81%E6%8E%A7/%E6%B5%81%E6%8E%A7.html" class="tree-link ">流控</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%B5%81%E6%8E%A7/credit-based%E6%B5%81%E6%8E%A7.html" class="tree-link ">credit-based流控</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%B5%81%E6%8E%A7/%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6.html" class="tree-link ">拥塞控制</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%B5%81%E6%8E%A7/%E8%99%9A%E9%80%9A%E9%81%93.html" class="tree-link ">虚通道</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E6%B5%81%E6%8E%A7/%E9%98%9F%E5%A4%B4%E9%98%BB%E5%A1%9E.html" class="tree-link ">队头阻塞</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/NoC/%E8%B7%AF%E7%94%B1/%E8%B7%AF%E7%94%B1.html" class="tree-link ">路由</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E8%B7%AF%E7%94%B1/XY%E8%B7%AF%E7%94%B1.html" class="tree-link ">XY路由</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E8%B7%AF%E7%94%B1/%E5%81%8F%E8%BD%AC%E8%B7%AF%E7%94%B1.html" class="tree-link ">偏转路由</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/NoC/%E8%B7%AF%E7%94%B1/%E8%87%AA%E9%80%82%E5%BA%94%E8%B7%AF%E7%94%B1.html" class="tree-link ">自适应路由</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+</ul>
+
+    </details>
+    
+    
+    <details class="domain-group" open>
+      <summary class="domain-label">存储</summary>
+      
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/%E5%AD%98%E5%82%A8/%E5%AD%98%E5%82%A8.html" class="tree-link ">存储</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/%E5%AD%98%E5%82%A8/%E5%86%85%E5%AD%98/%E5%86%85%E5%AD%98.html" class="tree-link ">内存</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/%E5%AD%98%E5%82%A8/%E5%86%85%E5%AD%98/DRAM.html" class="tree-link ">DRAM</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%AD%98%E5%82%A8/%E5%86%85%E5%AD%98/DDR.html" class="tree-link ">DDR</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%AD%98%E5%82%A8/%E5%86%85%E5%AD%98/DRAM%E5%88%B7%E6%96%B0.html" class="tree-link ">DRAM刷新</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%AD%98%E5%82%A8/%E5%86%85%E5%AD%98/GDDR.html" class="tree-link ">GDDR</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%AD%98%E5%82%A8/%E5%86%85%E5%AD%98/HBM.html" class="tree-link ">HBM</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%AD%98%E5%82%A8/%E5%86%85%E5%AD%98/%E5%86%85%E5%AD%98%E6%8E%A7%E5%88%B6%E5%99%A8.html" class="tree-link ">内存控制器</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%AD%98%E5%82%A8/%E6%A6%82%E5%BF%B5/%E5%86%85%E5%AD%98%E5%A2%99.html" class="tree-link current">内存墙</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%AD%98%E5%82%A8/%E6%A6%82%E5%BF%B5/%E5%AD%98%E7%AE%97%E4%B8%80%E4%BD%93.html" class="tree-link ">存算一体</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/%E5%AD%98%E5%82%A8/%E6%8C%81%E4%B9%85/%E6%8C%81%E4%B9%85.html" class="tree-link ">持久</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%AD%98%E5%82%A8/%E6%8C%81%E4%B9%85/NAND%20Flash.html" class="tree-link ">NAND Flash</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/%E5%AD%98%E5%82%A8/%E6%8C%81%E4%B9%85/SSD.html" class="tree-link ">SSD</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%AD%98%E5%82%A8/%E6%8C%81%E4%B9%85/NVMe.html" class="tree-link ">NVMe</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/%E5%AD%98%E5%82%A8/%E7%BC%93%E5%AD%98/%E7%BC%93%E5%AD%98.html" class="tree-link ">缓存</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%AD%98%E5%82%A8/%E7%BC%93%E5%AD%98/SRAM.html" class="tree-link ">SRAM</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%AD%98%E5%82%A8/%E7%BC%93%E5%AD%98/%E5%86%99%E5%9B%9E%E4%B8%8E%E5%86%99%E7%9B%B4%E8%BE%BE.html" class="tree-link ">写回与写直达</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+</ul>
+
+    </details>
+    
+    
+    <details class="domain-group" >
+      <summary class="domain-label">工艺</summary>
+      
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%B7%A5%E8%89%BA.html" class="tree-link ">工艺</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%88%B6%E9%80%A0/%E5%88%B6%E9%80%A0%E5%B7%A5%E8%89%BA.html" class="tree-link ">制造工艺</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%88%B6%E9%80%A0/FinFET.html" class="tree-link ">FinFET</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%88%B6%E9%80%A0/%E5%85%89%E5%88%BB.html" class="tree-link ">光刻</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%88%B6%E9%80%A0/%E5%88%BB%E8%9A%80.html" class="tree-link ">刻蚀</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%88%B6%E9%80%A0/%E5%B7%A5%E8%89%BA%E8%8A%82%E7%82%B9.html" class="tree-link ">工艺节点</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%88%B6%E9%80%A0/%E6%8E%BA%E6%9D%82.html" class="tree-link ">掺杂</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%88%B6%E9%80%A0/%E6%91%A9%E5%B0%94%E5%AE%9A%E5%BE%8B.html" class="tree-link ">摩尔定律</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%88%B6%E9%80%A0/%E6%99%B6%E5%9C%86.html" class="tree-link ">晶圆</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%88%B6%E9%80%A0/%E8%89%AF%E7%8E%87.html" class="tree-link ">良率</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%88%B6%E9%80%A0/%E8%96%84%E8%86%9C%E6%B2%89%E7%A7%AF.html" class="tree-link ">薄膜沉积</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <details >
+        <summary>
+          <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%B0%81%E8%A3%85/%E5%B0%81%E8%A3%85.html" class="tree-link ">封装</a>
+        </summary>
+        
+<ul class="tree">
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%B0%81%E8%A3%85/2.5D%E5%B0%81%E8%A3%85.html" class="tree-link ">2.5D封装</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%B0%81%E8%A3%85/3D%E5%A0%86%E5%8F%A0.html" class="tree-link ">3D堆叠</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%B0%81%E8%A3%85/Chiplet.html" class="tree-link ">Chiplet</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%B0%81%E8%A3%85/CoWoS.html" class="tree-link ">CoWoS</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%B0%81%E8%A3%85/TSV.html" class="tree-link ">TSV</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%B0%81%E8%A3%85/%E4%B8%AD%E4%BB%8B%E5%B1%82.html" class="tree-link ">中介层</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%B0%81%E8%A3%85/%E5%80%92%E8%A3%85%E8%8A%AF%E7%89%87.html" class="tree-link ">倒装芯片</a>
+      </div>
+    
+  </li>
+  
+  <li>
+    
+    
+    
+    
+      <div class="tree-leaf">
+        <a href="/cards/%E5%B7%A5%E8%89%BA/%E5%B0%81%E8%A3%85/%E5%BC%95%E7%BA%BF%E9%94%AE%E5%90%88.html" class="tree-link ">引线键合</a>
+      </div>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+</ul>
+
+      </details>
+    
+  </li>
+  
+</ul>
+
+    </details>
+    
+  </div>
+</aside>
+
+
+  <article class="cards-main card-page">
+    <nav class="breadcrumb">
+      <a href="/cards/">知识卡片</a>
+      <span class="sep">/</span><a href="/cards/%E5%AD%98%E5%82%A8/%E5%AD%98%E5%82%A8.html">存储</a>
+      <span class="sep">/</span><span class="here">内存墙</span>
+    </nav>
+
+    <header class="card-head">
+      <h1 class="card-title">内存墙</h1>
+      <div class="card-meta">
+        <span class="card-domain">存储</span>
+        <span class="card-cat">存储-概念</span>
+        <a class="btn-mindmap" href="/cards/index.html#存储/概念/内存墙">思维导图定位 ↗</a>
+      </div>
+    </header>
+
+    <div class="card-body">
+      <h1>内存墙（Memory Wall）</h1>
+<h2>定义</h2>
+<p>算力增长速度远超内存带宽增长速度，导致处理器"算得快但喂不饱"，内存带宽成为系统性能瓶颈的现象。是存储层次设计的核心约束。</p>
+<h2>机制与特征</h2>
+<ul>
+<li>算力（峰值算力）增速 &gt;&gt; 内存带宽增速</li>
+<li>处理器大部分时间在等数据，算力利用率低</li>
+<li>典型数据：处理器算力每年翻倍，内存带宽增速只有个位数百分比</li>
+<li>缓解手段：缓存层次、HBM 高带宽内存、CXL 内存扩展、存算一体</li>
+</ul>
+<h2>权衡与决策</h2>
+<ul>
+<li><strong>带宽 vs 容量 vs 成本</strong>：内存墙迫使在带宽、容量、成本间权衡——HBM 提带宽但贵，缓存提带宽但容量小</li>
+</ul>
+<h2>辨析与关系</h2>
+<ul>
+<li>与 HBM：HBM 是缓解内存墙（带宽侧）的主要技术手段</li>
+<li>与 CXL：CXL 是缓解内存墙（容量侧）的技术手段</li>
+</ul>
+    </div>
+
+    
+    <footer class="card-rel">
+      
+      <div class="rel-block">
+        <h3>父卡片</h3>
+        <a class="rel-link" href="/cards/%E5%AD%98%E5%82%A8/%E5%AD%98%E5%82%A8.html">存储</a>
+      </div>
+      
+      
+    </footer>
+    
+  </article>
+</div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    
+    <div class="social">
+      <a href="https://github.com/ttoms" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    
+    <div class="copyright">© ttoms · 自建静态站</div>
+  </div>
+</footer>
+
+<script src="/assets/js/site.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}知识卡片 · {{ site.title }}{% endblock %}
+{% block content %}
+<div class="cards-layout">
+  {% import "_macros.html" as m %}
+  {{ m.sidebar(roots_by_domain, none, none) }}
+
+  <div class="cards-main">
+    <div class="cards-toolbar">
+      <h1 class="cards-title">知识卡片</h1>
+      <div class="domain-switcher" id="domain-switcher">
+        {% for d in domains %}
+        <button class="chip {% if loop.first %}active{% endif %}" data-domain="{{ d }}">{{ d }}</button>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="mindmap-wrap" id="mindmap-wrap">
+      <svg id="mindmap"></svg>
+    </div>
+    <p class="mindmap-hint">点击节点打开卡片 · 拖拽平移 · 滚轮缩放 · 圆圈折叠/展开</p>
+  </div>
+</div>
+
+<script type="application/json" id="outlines-data">{{ outlines | tojson | safe }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="/assets/vendor/markmap/d3.min.js"></script>
+<script src="/assets/vendor/markmap/markmap-lib.js"></script>
+<script src="/assets/vendor/markmap/markmap-view.js"></script>
+<script>
+(function () {
+  var OUTLINES = JSON.parse(document.getElementById('outlines-data').textContent);
+  var domains = Object.keys(OUTLINES);
+  if (!domains.length) return;
+
+  var svg = document.getElementById('mindmap');
+  var switcher = document.getElementById('domain-switcher');
+  var currentDomain = domains[0];
+
+  function render(domain) {
+    currentDomain = domain;
+    switcher.querySelectorAll('button').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.domain === domain);
+    });
+    svg.innerHTML = '';
+    var Transformer = window.markmap.Transformer;
+    var Markmap = window.markmap.Markmap;
+    var transformer = new Transformer([]);  // 空插件：完全离线，不动态加载 hljs/katex
+    var data = transformer.transform(OUTLINES[domain] || '');
+    Markmap.create(svg, {
+      autoFit: true,
+      duration: 200,
+      zoom: true, pan: true,
+    }, data.root);
+    highlightFromHash();
+  }
+
+  function highlightFromHash() {
+    // #/cards/<domain>/<relpath> 或 #<domain>/<relpath>
+    var h = location.hash.replace(/^#\/?/, '');
+    if (!h) return;
+    var parts = h.split('/');
+    var domain = parts[0];
+    if (!OUTLINES[domain]) return;
+    if (domain !== currentDomain) render(domain);
+    var relpath = parts.slice(1).join('/');
+    var targetUrl = '/cards/' + encodeURIComponent(domain) + '/' +
+      relpath.split('/').map(encodeURIComponent).join('/') + '.html';
+    // 高亮思维导图节点
+    var links = svg.querySelectorAll('a[href]');
+    links.forEach(function (a) {
+      var g = a.closest('g');
+      if (g) g.classList.remove('current');
+      if (a.getAttribute('href') === targetUrl && g) g.classList.add('current');
+    });
+    // 高亮侧栏节点
+    document.querySelectorAll('.sidebar .tree-link').forEach(function (a) {
+      a.classList.toggle('current', a.getAttribute('href') === targetUrl);
+    });
+  }
+
+  switcher.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-domain]');
+    if (btn) render(btn.dataset.domain);
+  });
+
+  window.addEventListener('hashchange', highlightFromHash);
+  render(currentDomain);
+})();
+</script>
+{% endblock %}

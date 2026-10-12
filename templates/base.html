@@ -32,7 +32,7 @@
   </div>
 </header>
 
-<main class="site-main">
+<main class="site-main{% if active == 'cards' %} site-main-cards{% endif %}">
 {% block content %}{% endblock %}
 </main>
 

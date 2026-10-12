@@ -26,4 +26,54 @@
       });
     });
   }
+
+  // 知识卡片目录：展开状态跨页持久化
+  var EXPAND_KEY = 'cards-sidebar-open';
+  function readOpen() {
+    try { return new Set(JSON.parse(localStorage.getItem(EXPAND_KEY) || '[]')); }
+    catch (e) { return new Set(); }
+  }
+  var openSet = readOpen();
+  document.querySelectorAll('.sidebar details[data-path]').forEach(function (d) {
+    if (openSet.has(d.dataset.path)) d.open = true;
+    d.addEventListener('toggle', function () {
+      if (d.open) openSet.add(d.dataset.path); else openSet.delete(d.dataset.path);
+      localStorage.setItem(EXPAND_KEY, JSON.stringify(Array.from(openSet)));
+    });
+  });
+
+  // 目录宽度拖拽调整 + 持久化
+  var resizer = document.getElementById('sidebar-resizer');
+  var sidebarEl = document.querySelector('.sidebar');
+  var layout = document.querySelector('.cards-layout');
+  if (resizer && sidebarEl && layout) {
+    var WIDTH_KEY = 'cards-sidebar-width';
+    var saved = parseInt(localStorage.getItem(WIDTH_KEY), 10);
+    if (saved >= 160 && saved <= 800) {
+      document.documentElement.style.setProperty('--sidebar-w', saved + 'px');
+    }
+    var dragging = false;
+    resizer.addEventListener('mousedown', function (e) {
+      dragging = true;
+      resizer.classList.add('dragging');
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = 'col-resize';
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function (e) {
+      if (!dragging) return;
+      var w = e.clientX - layout.getBoundingClientRect().left;
+      w = Math.max(160, Math.min(800, w));
+      document.documentElement.style.setProperty('--sidebar-w', w + 'px');
+    });
+    document.addEventListener('mouseup', function () {
+      if (!dragging) return;
+      dragging = false;
+      resizer.classList.remove('dragging');
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+      var w = parseInt(document.documentElement.style.getPropertyValue('--sidebar-w'), 10);
+      if (w) localStorage.setItem(WIDTH_KEY, w);
+    });
+  }
 })();

@@ -34,6 +34,9 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MANIFEST_PATH = os.path.join(ROOT, ".build-manifest.json")
 
+# 知识卡片每一级（同一父节点下的兄弟节点）最多允许的节点数，超过建议重组
+MAX_CHILDREN = 8
+
 
 def enc(s):
     """URL 编码，保留 / （中文、空格等转为 %xx）。"""
@@ -384,7 +387,22 @@ def build_tree(cards, by_basename, reporter):
             cur = cur["parent"]
         chain.reverse()
         card["ancestors"] = chain
+        card["ancestor_relpaths"] = [a["relpath"] for a in chain]
         card["children"].sort(key=lambda c: c["name"])
+
+    # 每级节点数上限校验（> MAX_CHILDREN 建议重组，保证思维导图/谱系可读）
+    for card in cards:
+        n = len(card["children"])
+        if n > MAX_CHILDREN:
+            names = "、".join(c["name"] for c in card["children"])
+            reporter.warn(
+                f"节点「{card['name']}」（{card['relpath']}）有 {n} 个子节点，超过 {MAX_CHILDREN} 上限，"
+                f"建议重组合并。子节点：{names}")
+
+    for domain, roots in roots_by_domain.items():
+        if len(roots) > MAX_CHILDREN:
+            reporter.warn(
+                f"领域「{domain}」有 {len(roots)} 个根卡，超过 {MAX_CHILDREN} 上限，建议合并")
 
     return roots_by_domain
 

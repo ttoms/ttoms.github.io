@@ -3,7 +3,8 @@
 {% block content %}
 <div class="cards-layout">
   {% import "_macros.html" as m %}
-  {{ m.sidebar(roots_by_domain, card.relpath, card.domain) }}
+  {{ m.sidebar(roots_by_domain, card.relpath, card.domain, card.ancestor_relpaths) }}
+  <div class="sidebar-resizer" id="sidebar-resizer" title="拖拽调整目录宽度"></div>
 
   <article class="cards-main card-page">
     <nav class="breadcrumb">

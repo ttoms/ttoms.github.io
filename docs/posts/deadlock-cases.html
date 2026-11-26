@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NoC 与总线死锁经典案例：拓扑、协议与集合通信 · ttoms</title>
+<meta name="description" content="半导体/芯片/SOC/总线">
+<script>
+// 主题初始化（防闪烁）：跟随系统 + localStorage 覆盖
+(function () {
+  var saved = localStorage.getItem('theme');
+  var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var theme = saved || (sysDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="stylesheet" href="/assets/css/theme.css?v=67c8c4d4">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="/index.html">ttoms</a>
+    <nav class="site-nav">
+      
+      <a href="/index.html" class="nav-link ">首页</a>
+      
+      <a href="/posts/" class="nav-link active">博客</a>
+      
+      <a href="/cards/" class="nav-link ">知识卡片</a>
+      
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="切换主题" title="切换深浅色">
+      <span class="icon-sun">☀</span><span class="icon-moon">☾</span>
+    </button>
+  </div>
+</header>
+
+<main class="site-main">
+
+<article class="post">
+  <div class="content-resizer" id="content-resizer" title="拖拽调整内容宽度"></div>
+  <header class="post-head">
+    <h1 class="post-title">NoC 与总线死锁经典案例：拓扑、协议与集合通信</h1>
+    <div class="post-meta">
+      <time>2026-11-26</time>
+      <span class="post-cat">技术</span>
+      <span class="post-tags">NoC · 总线 · 死锁 · 多播 · 归约 · AXI</span>
+    </div>
+  </header>
+  <div class="post-body">
+    <h1>NoC 与总线死锁经典案例：拓扑、协议与集合通信</h1>
+<blockquote>
+<p>读法：每个案例回答三个问题——环怎么形成、常规手段为什么不够、破法及代价。案例按拓扑、协议、集合通信分组；约束不同，破法也不同。机制和分析方法见姊妹篇《死锁综述》。</p>
+</blockquote>
+<h2>1. 拓扑案例</h2>
+<h3>1.1 2D mesh</h3>
+<p>确定性 XY 本身无死锁；一旦引入自适应，包可以在 X 和 Y 之间任意转向，环就有了形成条件。</p>
+<p>典型的环：包 A 先东后北，包 B 先北后东。A 占着东向通道等北向，B 占着北向通道等东向，两者都不释放，闭环。XY 消除这个环，是因为它不允许 Y 到 X 的转向，通道依赖图只剩 X→Y 一个方向。</p>
+<p>常规手段不够的地方在于：XY 的无环证明只覆盖单播最小路由。多播如果在分叉点随意转向，或者故障后重路由改变了转向集合，原来的证明就失效了。</p>
+<p>破法有三档：XY 最省，代价是没有自适应；turn model 允许部分转向，仍然无环，代价是禁掉一部分路径；全自适应要 escape VC，给自适应流量留一条确定性的无环通道，代价是多一组 VC 和分配逻辑。</p>
+<h3>1.2 Torus</h3>
+<p>Torus 每维首尾相连，环绕链路把 mesh 的直线变成环。即使采用 XY，X 方向绕一圈回来仍可能与 Y 方向形成环；包的依赖可以沿环走一整圈回到起点。</p>
+<p>dateline VC 是常用解法：在环上选一条“日期变更线”，跨线的包走专用 VC，把物理环切成两段无环的路径。也可以用双 VC 分方向，或把环绕链路当作独立虚通道处理。</p>
+<p>代价是 VC 数量和路由器复杂度上升。还要注意：虚拟化只改变资源，不改变拓扑；切分后仍要重新画 CDG，确认没有残留环。</p>
+<h3>1.3 Ring</h3>
+<p>单向环的 wrap-around 本身就是环；双向环上，如果读写各走一边，两个方向的包可能互相占住对方的环槽。token 传递如果要求对方先释放缓冲，也会成环。</p>
+<p>破法取决于环的类型：token/credit 按方向独立；读写方向分离；wrap 处插入 VC 切断环；多播要求所有分支同向，避免分支在环上对向占槽。</p>
+<p>代价是带宽利用率和延迟。环的优点是布线简单，缺点是任何共享槽位都可能成为环的节点，资源划分要比 mesh 更小心。</p>
+<h3>1.4 Crossbar</h3>
+<p>输出队列 crossbar 通常无死锁：每个输出端口有独立队列，包只等自己的端口。共享中央缓冲或“输入队列 + 共享缓冲”的结构才会成环。</p>
+<p>典型环：多播在中央缓冲分叉，一个包要等所有输出端口；端口又被其他包占着，那些包在等中央缓冲；中央缓冲被第一个包占着不放。</p>
+<p>破法是每端口独立输出队列、多播每分支独立缓冲、分叉点整包转发，或者输入侧做 VOQ（每输出一个队列）。代价是缓冲区数量和仲裁复杂度上升。</p>
+<h3>1.5 Fat-tree</h3>
+<p>Fat-tree 的环来自“先下后上”：包从根往下走，再折返向上，就会和另一条上行流形成环。根节点还是热点，上行缓冲容易被占满，下行响应回不去。</p>
+<p>破法是 up<em>/down</em> 路由：所有包先上行到共同祖先，再下行，禁止 down→up 转向。根节点给每个目的地独立队列；多播在根复制时用独立缓冲，不能占着上行缓冲等所有下行分支。</p>
+<p>代价是根节点的带宽和延迟；树越深，上行跳数越多。</p>
+<h2>2. 总线/协议案例</h2>
+<h3>2.1 AXI</h3>
+<p>AXI 把 AW/W/B/AR/R 拆成五个独立通道，同 ID 有序、不同 ID 可乱序，支持 outstanding。协议本身已经做了通道分离，但互连实现如果把响应合回一个共享缓冲，环会重新出现。</p>
+<p>典型环有三个。第一，共享响应 FIFO 被请求占满：请求等下游，响应等同一个 FIFO。第二，读数据和写响应共用一个队列：master 在等读数据，读数据排在写响应后面，写响应又要等 master 释放写缓冲。第三，位宽/时钟转换桥的响应回压：桥内缓冲被请求占满，响应回不去。</p>
+<p>破法是每 ID、每方向独立响应队列，R/B 分离，桥内给响应预留槽位，限制 outstanding 数量，转换桥做响应隔离。</p>
+<p>边界：AXI 的通道分离不等于互连无死锁；证明要看互连把哪些通道合回了同一组资源。</p>
+<h3>2.2 AXI 多播/归约 fabric</h3>
+<p>写多播通常用 AW/W 加 user 掩码，每个目的地有独立写队列，B 响应独立回收。环出现在三个位置：分叉点等所有目的地接收时占着上游共享缓冲；B 响应队列与请求队列共享；归约节点的输出与输入共用 VC。</p>
+<p>破法是每目的地缓冲或分叉点整包转发；B 响应独立队列，只合并 BRESP；归约走独立 VC，输出信用不依赖输入；限制未完成的多播/归约数量。</p>
+<p>代价是缓冲面积和响应合并逻辑。AXI 读没有掩码，多播一般只做写路径；读多播要么拆单播，要么在 fabric 层做地址复制，代价更高。</p>
+<h3>2.3 CHI</h3>
+<p>CHI 的协议层有 REQ、RSP、SNP、DAT 几类消息，home node 负责排序和 snoop，支持 DCT/DMT 和 retry。环通常不在数据通道，而在协议层的等待关系。</p>
+<p>典型环：snoop 响应等原始请求释放缓冲；retry 持有资源等待重试成功；几类消息共用同一个虚网，snoop 被数据挡住。</p>
+<p>破法是协议层分虚网，retry 不持有资源，DCT/DMT 的完成路径独立，home node 给 snoop 响应预留资源。</p>
+<p>边界：具体通道映射和 retry 规则以规范为准；这里给的是排障时的等待关系，不是逐条协议复述。</p>
+<h3>2.4 PCIe/CXL</h3>
+<p>PCIe 是 credit-based 流控，事务分 posted、non-posted、completion。环的典型形状是 completion 等 posted 流量释放缓冲；config 请求等 completion，completion 又被同一链路的流量挡住。</p>
+<p>破法是 completion 独立缓冲和 credit，posted/non-posted 分离，config 路径留独立通道。completion timeout 只做检测，不能当解法；超时后先区分丢包、路由错误和真死锁。</p>
+<h3>2.5 AHB/APB</h3>
+<p>AHB/APB 单 outstanding，天然没有并发死锁。桥到 AXI 时问题才出现：AHB 侧等 AXI 响应，AXI 侧的响应又被 AXI 请求占住。</p>
+<p>破法是桥内响应缓冲隔离，限制 AXI outstanding，不要让 AHB 侧的反压直接卡住 AXI 响应路径。代价是桥的面积和延迟。</p>
+<h2>3. 集合通信案例</h2>
+<h3>3.1 树形多播</h3>
+<p>wormhole 多播在分叉点复制，一个包同时占多条下游链路的缓冲。两棵多播树的分支交叉时，各自等对方让出缓冲，形成环；同一棵树的两个分支也可能互等。</p>
+<p>store-forward 是最直接的解法：整包收齐再转发，一个包任一时刻只占一个节点的缓冲，多播退化成逐分支的整包转发。代价是延迟和缓冲面积。</p>
+<p>专用多播 VC、每分支独立缓冲、按维序复制也能解，代价是 VC 分配和复制顺序的复杂度。拆成多个单播最简单，但流量放大。</p>
+<h3>3.2 多播 + 响应合并</h3>
+<p>每个目的地回一个 B 响应，发起方要等齐。环出现在响应队列与请求队列共享时：合并逻辑等所有 B，B 又被请求占住。</p>
+<p>破法是 B 响应独立队列，每个目的地一个响应槽，只合并 BRESP；合并逻辑不持有请求缓冲等待。超时只做检测，不能靠丢响应来解。</p>
+<h3>3.3 all-reduce</h3>
+<p>all-reduce 分 reduce-scatter 和 all-gather 两个阶段。两阶段共用同一组 VC 或缓冲时，前向数据等后向结果，后向结果又等前向数据释放缓冲，环闭合。</p>
+<p>破法是阶段分离：两个阶段不共享缓冲，阶段边界做一次排空；或者给归约独立虚网，combine 点整包缓冲。</p>
+<p>ring all-reduce 是反例：按固定环序发送，每步只等下一跳的空闲缓冲，缓冲预分配，不会成环。但这只说明 ring 算法安全，不代表任意 all-reduce 实现都安全；树形或分层归约仍要单独证明。</p>
+<h3>3.4 barrier</h3>
+<p>barrier 要求所有参与者到齐才放行。环出现在“到达消息占着放行消息需要的缓冲”：先到的参与者等未到的，未到的又被先到的资源挡住。</p>
+<p>破法是独立 barrier 虚网或独立网络，到达与放行分开缓冲，相位边界排空。代价是额外网络或缓冲；收益是把集合同步从数据平面里隔离出来。</p>
+<h2>4. 案例回看：对应七种模式</h2>
+<ul>
+<li>AXI 桥共享 FIFO → 请求-响应环。</li>
+<li>Ring/Torus 的信用与环槽 → 信用环。</li>
+<li>all-reduce 两阶段 → 树形汇聚-分发环。</li>
+<li>树形多播 → 分叉多播环。</li>
+<li>CHI 的 snoop/retry → 分层协议环。</li>
+<li>自适应路由 → 顺序倒置环。</li>
+<li>barrier → 集合相位环。</li>
+</ul>
+<p>排障时先认形状，再找共享资源，最后选破坏哪一条条件。形状认错，后面的资源分析会全错。</p>
+<h2>参考</h2>
+<ul>
+<li>【学术】Dally &amp; Seitz, Deadlock-Free Message Routing in Multiprocessor Interconnection Networks, 1986：CDG 无环与确定性路由的死锁自由。</li>
+<li>【学术】Duato, A New Theory of Deadlock-Free Adaptive Routing in Wormhole Networks, 1993：escape VC 与自适应路由的充分条件。</li>
+<li>【学术】Lin, McKinley &amp; Ni, Deadlock-Free Multicast Wormhole Routing in 2D Mesh Multicomputers：多播死锁与树形路由的经典处理。</li>
+<li>【规范】ARM AMBA AXI Protocol Specification：五通道、ID 顺序、响应语义。</li>
+<li>【规范】ARM AMBA CHI Architecture Specification：home node、snoop、retry 与协议层虚网。</li>
+<li>【推断】本文关于 AXI 多播/归约 fabric 的落点，来自对现有设计与协议约束的推导，未逐条对照具体实现。</li>
+</ul>
+  </div>
+</article>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    
+    <div class="social">
+      <a href="https://github.com/ttoms" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    
+    <div class="copyright">© ttoms · 自建静态站</div>
+  </div>
+</footer>
+
+<script src="/assets/js/site.js?v=8c5a1420"></script>
+
+<script src="/assets/vendor/highlight/highlight.min.js?v=837a6fa5"></script>
+<script>if(window.hljs){hljs.highlightAll();}</script>
+<script>
+// 正文含公式才懒加载 KaTeX
+(function(){
+  var body = document.querySelector('.post-body');
+  if (body && /\$\$|\$[^$\n]+\$/.test(body.innerHTML)) {
+    var css = document.createElement('link');
+    css.rel = 'stylesheet'; css.href = '/assets/vendor/katex/katex.min.css?v=d4ab5b8e';
+    document.head.appendChild(css);
+    var s = document.createElement('script');
+    s.src = '/assets/vendor/katex/katex.min.js?v=103a5376';
+    s.onload = function(){
+      var auto = document.createElement('script');
+      auto.src = '/assets/vendor/katex/contrib/auto-render.min.js?v=e5372d19';
+      auto.onload = function(){ renderMathInElement(body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]}); };
+      document.head.appendChild(auto);
+    };
+    document.head.appendChild(s);
+  }
+})();
+</script>
+
+</body>
+</html>

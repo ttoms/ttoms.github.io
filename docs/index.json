@@ -1537,6 +1537,31 @@
   ],
   "posts": [
     {
+      "title": "NoC 与总线死锁经典案例：拓扑、协议与集合通信",
+      "url": "/posts/deadlock-cases.html",
+      "date": "2026-11-26",
+      "category": "技术",
+      "tags": [
+        "NoC",
+        "总线",
+        "死锁",
+        "多播",
+        "归约",
+        "AXI"
+      ]
+    },
+    {
+      "title": "NoC 与总线死锁综述：机制、类型与分析方法",
+      "url": "/posts/deadlock-overview.html",
+      "date": "2026-11-26",
+      "category": "技术",
+      "tags": [
+        "NoC",
+        "总线",
+        "死锁"
+      ]
+    },
+    {
       "title": "NoC 与总线死锁：从请求/响应分离到多播与归约",
       "url": "/posts/noc-bus-deadlock.html",
       "date": "2026-11-26",

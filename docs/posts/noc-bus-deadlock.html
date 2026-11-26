@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NoC 与总线死锁：从请求/响应分离到多播与归约 · ttoms</title>
+<meta name="description" content="半导体/芯片/SOC/总线">
+<script>
+// 主题初始化（防闪烁）：跟随系统 + localStorage 覆盖
+(function () {
+  var saved = localStorage.getItem('theme');
+  var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var theme = saved || (sysDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="stylesheet" href="/assets/css/theme.css?v=67c8c4d4">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="/index.html">ttoms</a>
+    <nav class="site-nav">
+      
+      <a href="/index.html" class="nav-link ">首页</a>
+      
+      <a href="/posts/" class="nav-link active">博客</a>
+      
+      <a href="/cards/" class="nav-link ">知识卡片</a>
+      
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="切换主题" title="切换深浅色">
+      <span class="icon-sun">☀</span><span class="icon-moon">☾</span>
+    </button>
+  </div>
+</header>
+
+<main class="site-main">
+
+<article class="post">
+  <div class="content-resizer" id="content-resizer" title="拖拽调整内容宽度"></div>
+  <header class="post-head">
+    <h1 class="post-title">NoC 与总线死锁：从请求/响应分离到多播与归约</h1>
+    <div class="post-meta">
+      <time>2026-11-26</time>
+      <span class="post-cat">技术</span>
+      <span class="post-tags">NoC · 总线 · 死锁 · 多播 · 归约</span>
+    </div>
+  </header>
+  <div class="post-body">
+    <h1>NoC 与总线死锁：从请求/响应分离到多播与归约</h1>
+<blockquote>
+<p>结论先行：死锁不是某一种协议的缺陷，而是“持有资源、等待另一个资源”形成的环。req/rsp 分开、固定维序、多播缓冲、归约分相，本质上都在做同一件事：让等待图无环。下面先回答四个具体问题，再按类型、分析方法、典型案例、抽象模型展开。</p>
+</blockquote>
+<h2>1. 四个具体问题</h2>
+<h3>1.1 读写数据、req/rsp 为什么要分开</h3>
+<p>分开切断的是“请求等响应、响应等缓冲”的消息依赖环，不是路由环。它解决协议级死锁，不解决路由死锁。</p>
+<p>环是这样形成的：请求方向是 master→slave，响应方向是 slave→master。两者共用一组缓冲或信用时，两个方向的包会互相占住对方需要的资源。典型场景是桥里的一个共享 FIFO：</p>
+<ul>
+<li>请求占满 FIFO 的上游槽位，等待下游接收；</li>
+<li>下游的响应要回上游，必须经过同一个 FIFO；</li>
+<li>响应进不来，请求就完成不了；请求完成不了，槽位不释放，响应更进不来。</li>
+</ul>
+<p>另一个常见版本发生在共享缓冲的桥里：桥的同一组缓冲既要存上游来的请求，又要存下游回来的响应。请求先占满缓冲，等待下游；下游的响应要回上游，必须等同一个缓冲；响应进不来，请求完不成，缓冲不释放，环闭合。如果端点自己永不取响应，那是端点行为问题；分离只能保证网络内的响应路径不被请求路径卡住，不能替端点消费响应。</p>
+<p>读数据和写数据也要分，原因有两层。第一层是方向：R 从 slave 回 master，W 从 master 去 slave，共享同一条物理通道时，两个方向会互相等待。第二层是流量特征：R 通常是小包、延迟敏感，W 可能是长 burst；混在一起会头阻塞，读响应被迫排在写数据后面。AXI 把 AW/W/B/AR/R 拆成五个独立通道，就是把这个原则写进协议；NoC 通常进一步拆成 request network 和 response network，至少也要独立 VC、独立信用池。</p>
+<p>边界要说清楚：</p>
+<ul>
+<li>分开只保证“响应有独立逃生路径”，前提是端点最终会接收响应。如果 master 永远不取 R，响应缓冲仍会填满，反压会传回 slave；这时是端点行为问题，不是网络死锁。</li>
+<li>逻辑分开（VC、信用池）和物理分开（独立网络）都能成立。关键不是线是否分开，而是两类的缓冲和信用是否独立、等待关系里还有没有环。</li>
+<li>代价是面积、链路利用率和仲裁复杂度。低负载共享更省，但必须把最坏情况的等待关系证明清楚。</li>
+</ul>
+<p>一句话：分开不是目的，让“响应不依赖请求释放的资源”才是目的。</p>
+<h3>1.2 mesh 为什么通常固定维序</h3>
+<p>固定维序（常见 XY：先走 X，再走 Y）给通道依赖图一个全序，消除了环。mesh 没有环回链路，所以不需要虚拟通道就能证明无死锁。</p>
+<p>通道依赖图（CDG）的节点是通道或缓冲，边表示“包可以从 A 转到 B”。对确定性路由，CDG 无环是死锁自由的充要条件（Dally）。在 2D mesh 里，X 类通道和 Y 类通道本来可以互相转：一个包先向右再向上，另一个先向上再向右，两者就可能各占一条通道等对方。XY 规定所有包先走完 X 再走 Y，依赖只从 X 指向 Y，不会反向，环就消失了。</p>
+<p>代价也很直接：没有自适应，拥塞时不能绕路，热点端口延迟高，非最小路径不可用。</p>
+<p>“通常”不等于“唯一”：</p>
+<ul>
+<li>turn model（west-first、north-last、negative-first）不引入 VC，也能获得部分自适应；</li>
+<li>全自适应路由需要 escape VC：给所有自适应流量留一条确定性的无环逃生通道（Duato）；</li>
+<li>torus 的环绕链路会重新引入环，需要 dateline VC 把环切成两段；</li>
+<li>不规则拓扑用 up<em>/down</em> 之类的方法构造无环方向。</li>
+</ul>
+<p>还要注意边界：维序只保证单播、最小路由、无环回。多播、归约、链路故障后的拓扑变化，都要重新证明，不能直接继承。</p>
+<h3>1.3 reduce 引入了什么违例</h3>
+<p>reduce 把单播的“单向偏序”变成了“多对一汇聚 + 结果反向分发”。如果归约输出和输入共享缓冲或信用，就会形成消息依赖环；如果归约节点终结并重发事务，还会破坏 AXI 的 ID 和响应语义。</p>
+<p>三条具体机制：</p>
+<ul>
+<li>汇聚等待：combine 节点要等所有输入到齐才能出结果。输入占着缓冲，输出又需要缓冲；两者共用时，输入等输出、输出等输入。</li>
+<li>反向依赖：单播的维序假设流量沿一个方向推进；归约结果往往要回到源侧（all-reduce 的 all-gather 阶段），形成与正向相反的资源依赖，CDG 出现环。</li>
+<li>原子性与顺序：浮点归约不满足结合律，必须按固定顺序合并。为了等某个序号的包，节点会持有已到的部分结果和缓冲，形成 hold-and-wait。AXI 侧还有“一个请求一个响应”的约束；归约若合并或拆分事务，必须重映射 ID 和响应，否则是协议违例。</li>
+</ul>
+<p>all-reduce 的两个阶段（reduce-scatter、all-gather）如果共用同一组 VC 或缓冲，前向和后向会互相等待。barrier 则是“所有参与者到齐才放行”；如果到达消息占用的资源需要被放行消息释放，同样成环。</p>
+<p>破法不是一条，而是一组约束：</p>
+<ul>
+<li>归约走独立虚网或独立平面，至少独立 VC 和信用池；</li>
+<li>树和阶段单向：先汇聚后分发，两个阶段不共享缓冲，用阶段边界做一次排空；</li>
+<li>combine 点整包缓冲，避免 flit 级交叉持有；</li>
+<li>输出信用独立于输入，限制未完成归约的数量；</li>
+<li>端侧归约（软件、CPU 或专用引擎）作为兜底，网络只负责搬运。</li>
+</ul>
+<p>边界同样重要：不是所有 reduce 都死锁。ring all-reduce 按固定环序发送，每步只等下一跳的空闲缓冲，缓冲预分配，就不会成环。死锁来自“反向 + 共享”，不是“归约”这个词本身。</p>
+<h3>1.4 多播/组播的典型死锁，store-forward 是不是唯一解</h3>
+<p>典型案例如下：</p>
+<ul>
+<li>wormhole 树形多播：一个包在分叉点复制成多支，同时占着多条下游链路的缓冲；另一棵多播树的分支与它交叉，各自等对方让出缓冲，形成环。</li>
+<li>同一棵树的两个分支互相等待：一支被拥塞挡住，上游缓冲不释放，另一支也无法前进。</li>
+<li>多播加响应合并：每个目的地回一个响应，发起方要等齐；如果响应队列和请求队列共享，响应等请求释放，请求等响应到齐。</li>
+<li>ordered multicast 或 barrier：消息之间的顺序依赖形成等待环。</li>
+</ul>
+<p>store-forward 能解，是因为它改变了资源占用的粒度。wormhole 下，一个包同时占多个节点的缓冲，环可以在“同一个包的多条分支”之间形成；store-forward 把包收齐再转发，任一时刻一个包只占一个节点的缓冲，多播在分叉点变成逐分支的整包转发，等价于多条单播路径的组合，剩下的只是普通路由死锁，维序即可解决。代价是每跳整包缓冲、延迟增加、缓冲面积大，对长包不友好。</p>
+<p>但它不是唯一解：</p>
+<ul>
+<li>专用多播虚网或 VC，信用池独立，树形分支各用独立缓冲；</li>
+<li>按维序或层序复制，只在确定的转向点分叉，复制顺序与路由偏序一致；</li>
+<li>每个分支独立队列，分叉点不持有共享缓冲等待；</li>
+<li>拆成多个单播，简单但放大流量；</li>
+<li>bufferless/deflection 路由，靠重传而不是缓冲；</li>
+<li>信用预留：给多播分支预留最坏情况信用，避免运行中争抢。</li>
+</ul>
+<p>AXI 场景的落点更具体：AXI 读没有掩码，多播通常只做写路径（AW/W 加 user 掩码）；每个目的地独立写队列，B 响应独立回收。分叉点若要等所有目的地接收，不能占着上游共享缓冲等；要么每目的地缓冲，要么整包转发。响应合并只合并 BRESP，不能反向依赖请求队列。</p>
+<p>一句话：store-forward 是充分且简单的工程解，不是理论唯一解。选它还是选 VC/独立缓冲，取决于延迟、面积，以及是否愿意维护多播 VC 的分配顺序。</p>
+<h2>2. 类型</h2>
+<p>按“等的是什么资源”分类，比按协议分类更容易找到破法。</p>
+<ul>
+<li>资源死锁：缓冲、VC、信用、链路、输出端口。四个必要条件（互斥、持有并等待、不可抢占、循环等待）都能对上。破法是复制资源、整包预分配、允许丢弃重传、全序分配。</li>
+<li>路由死锁：包在通道之间转移形成环，CDG 有环。破法是维序、turn model、escape VC、dateline。</li>
+<li>协议/消息依赖死锁：请求等响应、读等写、snoop 等数据、completion 等缓冲。破法是 req/rsp 分离、独立信用、响应预留、分层超时。</li>
+<li>集合通信死锁：多播树、归约树、barrier、all-reduce。破法是独立虚网、阶段分离、整包缓冲、树序。</li>
+<li>顺序/流控死锁：信用环、ack 依赖、wormhole flit 交叉。破法是信用分层、每类流量独立 credit、禁止跨类持有。</li>
+<li>活锁与饿死：不是死锁，但同样“没有进展”。自适应路由的偏转、低优先级 starvation 都属于这一类。破法是老化、优先级提升、确定性逃生路径。</li>
+<li>系统级死锁：DMA、锁、驱动层的资源环。它不在网络内部，但排障时必须先区分“网络死锁”和“软件死锁”。</li>
+</ul>
+<p>还要区分单环和结（knot）：多个环共享资源会形成结，破一个环不够，必须找到共享节点。</p>
+<h2>3. 分析方法</h2>
+<p>分析死锁，顺序比工具重要。建议按下面八步走。</p>
+<ol>
+<li>定义资源和持有关系。先写清楚谁在等谁、等的是缓冲槽、VC、信用、响应还是锁。说不清资源，后面的图都是错的。</li>
+<li>画等待图。事务级用“包/事务”做节点，边表示 A 等 B 释放；路由级用通道做节点，画 CDG；共享缓冲用资源分配图。</li>
+<li>找环。等待图无环一定无死锁；有环则要结合资源数量判断是否真的死锁。多个环共享节点就是结。</li>
+<li>映射四个必要条件。互斥、持有并等待、不可抢占、循环等待，每条设计手段对应破坏其中一条。说不清破坏了哪条，就是没想清楚。</li>
+<li>加不变量。信用不为负；每个包最终被授权；响应路径不依赖请求释放；VC 不被跨类长期占用；归约输出不依赖被它阻塞的输入。</li>
+<li>做压力测试。置换流量（bit-reversal、transpose）、热点、读写混合、多播扇出、all-reduce、超订、最小缓冲、最大 outstanding。正常流量测不出死锁。</li>
+<li>形式化或模型检查。小规模配置可以枚举状态；仿真里加死锁检测器：连续 N 拍无进展就 dump 等待图，而不是只看超时。</li>
+<li>排障顺序。先确认是否所有端口都停，再看等待图，再定位共享资源。不要一上来就怀疑路由算法。</li>
+</ol>
+<p>工具不用多，关键是三种图：CDG 证明路由，事务级 wait-for 图证明协议，资源分配图证明共享缓冲。三种图都无环，才敢说无死锁。</p>
+<h2>4. 各类拓扑/协议下的典型案例</h2>
+<ul>
+<li>2D mesh：XY 无环；自适应需要 escape VC；链路故障后重路由要重新证明；多播要按维序复制。</li>
+<li>Torus：环绕链路让 X/Y 重新成环；dateline VC 把环切成两段；也可以用双 VC 分方向。</li>
+<li>Ring：双向环让读写各走一边，减少交叉；单向环上多播要让所有分支同向；wrap-around 本身就是环，需要 token 或 VC 切断。</li>
+<li>Crossbar：输出队列通常无死锁；共享中央缓冲加多播分叉会成环；AXI crossbar 每 master/slave 独立队列，读写分开。</li>
+<li>Fat-tree：up/down 路由，先上后下；根节点是热点；多播在根复制时要独立缓冲。</li>
+<li>AXI：五个独立通道；同 ID 有序、不同 ID 可乱序；outstanding 和响应队列要匹配。典型死锁是共享响应 FIFO 被请求占满、读数据等写响应、桥内读写共用缓冲。位宽/时钟转换桥要单独做响应隔离。</li>
+<li>AXI 多播/归约 fabric：写多播用掩码；每目的地独立队列；B 响应独立回收；归约节点独立 VC，输出信用不依赖输入。</li>
+<li>CHI：home node、snoop、DCT/DMT、retry。协议层的 req/rsp/snoop 要分虚网；retry 不能持有资源等待，否则 snoop 环会闭合。</li>
+<li>PCIe/CXL：credit-based 流控；completion 依赖；config 请求可能形成跨层等待。completion timeout 是检测手段，不是解法。</li>
+<li>AHB/APB：单 outstanding，天然没有并发死锁；桥到 AXI 时要在桥内做响应缓冲隔离，否则会把 AXI 的并发环引进来。</li>
+</ul>
+<h2>5. 抽象出来的通用案例</h2>
+<p>把具体协议剥掉，剩下的等待环只有几种基本形状。</p>
+<ul>
+<li>请求-响应环：A 持有请求缓冲等响应，B 持有响应缓冲等请求缓冲。破法是分离缓冲池，或给响应预留信用。</li>
+<li>信用环：信用在环上循环，某个节点扣住信用不放。破法是每类流量独立信用，或设置逃生 VC。</li>
+<li>树形汇聚-分发环：归约或多播的前向树和后向树共享缓冲。破法是阶段分离、单向树、combine 点整包缓冲。</li>
+<li>分叉多播环：一个包同时占多条分支的缓冲。破法是每分支独立缓冲、整包转发、专用多播 VC。</li>
+<li>分层协议环：一层等另一层的 ack，另一层等这一层的缓冲。破法是层间资源隔离，或让响应路径独立。</li>
+<li>顺序倒置环：两条流以相反顺序申请资源。破法是全局顺序（维序、ID 序、树序）。</li>
+<li>集合相位环：barrier 或 all-reduce 的相位之间互相等待。破法是相位边界排空，不同相位不共享缓冲。</li>
+</ul>
+<p>对应的通用规则只有六条：</p>
+<ol>
+<li>先把流量分类：请求、响应、多播、归约、配置。能互相等待的类，不能共用同一组缓冲和信用。</li>
+<li>路由层给全序或 escape VC，保证单播 CDG 无环。</li>
+<li>协议层保证响应总能 drain，响应信用不依赖请求释放。</li>
+<li>集合层做阶段分离，多播分叉不持有共享缓冲，归约输出独立于输入。</li>
+<li>任何“等待”都要有上界或逃生路径；超时只用于检测，不能当解法。</li>
+<li>用 CDG、wait-for 图、资源分配图三种图验证，再用最坏流量压测。</li>
+</ol>
+<p>交稿前的检查清单：</p>
+<ul>
+<li>每一类流量是否都有独立资源或逃生路径？</li>
+<li>单播路由的 CDG 是否无环？自适应是否有 escape VC？</li>
+<li>请求和响应是否在每个共享资源处分开了？</li>
+<li>多播分叉点是否持有共享缓冲等待？</li>
+<li>归约的前向和后向是否共享 VC 或缓冲？</li>
+<li>信用环是否存在“扣住不放”的节点？</li>
+<li>端点不取响应时，反压是否会与请求路径成环？</li>
+<li>最坏流量（置换、热点、all-reduce）是否跑过？</li>
+<li>死锁检测器是否能 dump 等待图？</li>
+<li>超时阈值是否基于最坏延迟，而不是拍脑袋？</li>
+</ul>
+<h2>参考</h2>
+<ul>
+<li>【学术】Dally &amp; Seitz, Deadlock-Free Message Routing in Multiprocessor Interconnection Networks, 1986：CDG 无环与确定性路由的死锁自由。</li>
+<li>【学术】Duato, A New Theory of Deadlock-Free Adaptive Routing in Wormhole Networks, 1993：escape VC 与自适应路由的充分条件。</li>
+<li>【学术】Lin, McKinley &amp; Ni, Deadlock-Free Multicast Wormhole Routing in 2D Mesh Multicomputers：多播死锁与树形路由的经典处理。</li>
+<li>【规范】ARM AMBA AXI Protocol Specification：五通道、ID 顺序、响应语义。</li>
+<li>【规范】ARM AMBA CHI Architecture Specification：home node、snoop、retry 与协议层虚网。</li>
+<li>【推断】本文中关于 AXI 多播/归约 fabric 的落点，来自对现有设计与协议约束的推导，未逐条对照具体实现。</li>
+</ul>
+  </div>
+</article>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    
+    <div class="social">
+      <a href="https://github.com/ttoms" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    
+    <div class="copyright">© ttoms · 自建静态站</div>
+  </div>
+</footer>
+
+<script src="/assets/js/site.js?v=8c5a1420"></script>
+
+<script src="/assets/vendor/highlight/highlight.min.js?v=837a6fa5"></script>
+<script>if(window.hljs){hljs.highlightAll();}</script>
+<script>
+// 正文含公式才懒加载 KaTeX
+(function(){
+  var body = document.querySelector('.post-body');
+  if (body && /\$\$|\$[^$\n]+\$/.test(body.innerHTML)) {
+    var css = document.createElement('link');
+    css.rel = 'stylesheet'; css.href = '/assets/vendor/katex/katex.min.css?v=d4ab5b8e';
+    document.head.appendChild(css);
+    var s = document.createElement('script');
+    s.src = '/assets/vendor/katex/katex.min.js?v=103a5376';
+    s.onload = function(){
+      var auto = document.createElement('script');
+      auto.src = '/assets/vendor/katex/contrib/auto-render.min.js?v=e5372d19';
+      auto.onload = function(){ renderMathInElement(body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]}); };
+      document.head.appendChild(auto);
+    };
+    document.head.appendChild(s);
+  }
+})();
+</script>
+
+</body>
+</html>
